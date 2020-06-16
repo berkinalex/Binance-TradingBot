@@ -1,0 +1,1524 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Binance TradingBot</title>
+  <link rel="stylesheet" href="assets/librerias/bootstrap.min.css">
+  <link href="assets/librerias/bootstrap-toggle.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/librerias/font-awesome.min.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="assets/librerias/selectize.bootstrap3.min.css"/>
+  <link rel="stylesheet" type="text/css" href="assets/librerias/styles.css">
+  <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+  <script src="assets/librerias/jquery.min.js"></script>
+  <script src="assets/librerias/popper.min.js"></script>
+  <script src="assets/librerias/bootstrap.min.js"></script>
+  <script src="assets/librerias/bootstrap-toggle.min.js"></script>
+  <script src="assets/librerias/selectize.min.js"></script>
+  <script src="assets/librerias/jquery-ui.js"></script>
+  <script src="index.js"></script>
+  <script src="order_1.js"></script>
+  <script src="order_2.js"></script>
+  <script src="order_3.js"></script>
+  <script src="order_4.js"></script>
+  <script src="order_5.js"></script>
+  <script src="order_6.js"></script>
+  <script src="order_7.js"></script>
+  <script src="order_8.js"></script>
+  <script src="dialogs.js"></script>
+  <script src="notifications.js"></script>
+  <script>if (window.module) module = window.module;</script>
+</head>
+<body>
+  <img src="loader.gif" id="ocultar_loader" width="100%" height="100%" draggable="false">
+  <img src="wait.gif" id="ocultar_wait" width="100%" height="100%" draggable="false">
+  <div class="container" id="ocultar" style="display:none;">
+    <audio id="alarma_1">
+      <source src="assets/audio/alarma_1.wav" type="audio/ogg">
+      </audio>
+      <div class="container" id="otasf">
+        <br>
+        <center>
+          <div class='console-container'>
+            <span id='text'></span>
+            <div class='console-underscore' id='console'>&#95;</div>
+          </div>
+          <div>
+            <a href="mailto:info@berkinalex.com">
+              <p style="margin-top: -25px;color: palegoldenrod;margin-bottom: 22px;margin-left: 319px;">BerkinAlex</p>
+            </a>
+          </div>
+        </center>
+        <div class="container">
+          <div class="row" style="margin-top: 10px;">
+            <div class="col-md-6">
+              <button style="text-align: center;background-color: black;width: inherit;" onclick="a1();" class="btn btn-success btn-block">Configuración</button>
+            </div>
+            <div class="col-md-6">
+              <button style="text-align: center;background-color: black;width: -webkit-fill-available;" onclick="a2();" class="btn btn-success btn-block">Herramientas</button>
+            </div>
+            <div class="col-md-6">
+              <div id="config" class="collapse" style="display: none;">
+                <div class="row" style="margin-top: 10px;">
+                  <div class="col-md-6">
+                    <select id="alec" onchange="alec();" style="color: white;background: darkslategrey;width: 100%;" class="btn-block" title="¿ Desea o no desea que se escriba en la consola de depuración las rutinas ?">
+                     <option value="Si">Sí (Logs Consola)</option>
+                     <option value="No">No (Logs Consola)</option>
+                   </select>
+                 </div>
+                 <div class="col-md-6">
+                  <select id="sonaralarmas" style="color: white;background: darkslategrey;width: 100%;" onchange="sonarAlarmas();" title="¿ Quieres escuchar una alarma cuando se completen las operaciones ?">
+                   <option value="Si" selected="">Activar alarmas</option>
+                   <option value="No">Desconectar alarmas</option>
+                 </select>
+               </div>
+             </div>
+             <div class="row">
+              <div class="col-md-6">
+                <select id="log_txt" style="color: white;background: darkslategrey;width: 100%;" onchange="log_txt();" title="¿ Quieres que se registre todo lo que hace el software en un log.txt ?">
+                 <option value="Si" selected="">Activar log.txt</option>
+                 <option value="No">No activar log.txt</option>
+               </select>
+             </div>
+             <div class="col-md-6">
+              <select id="activar_emails" style="color: white;background: darkslategrey;width: 100%;" onchange="activarEmails();" title="¿ Quieres que se se te envíen emails a tu correo electrónico cuando una operación se completa, da error o se cancela ?">
+               <option value="Si" selected="">Activar Emails</option>
+               <option value="No">No activar Emails</option>
+             </select>
+           </div>
+         </div>
+         <hr id="sep1">
+         <br>
+         <button type="button" style="width: 100%;" data-toggle="collapse" data-target="#aemail" class="btn btn-success">Email (Gmail) &#11015;</button>
+         <div id="aemail" class="collapse">
+          <input type="text" id="email_receptor" onfocusout="localStorage.setItem('email_receptor', this.value);" onkeyup="localStorage.setItem('email_receptor', this.value);" placeholder="Email del receptor" style="text-align: center;width: 100%;margin-right: -2px;" title="Email (Receptor)" required="">
+        </div>
+        <button type="button" style="width: 100%;" data-toggle="collapse" data-target="#api" class="btn btn-success">API Binance &#11015;</button>
+        <div id="api" class="collapse">
+          <input type="password" id="clave_api" onfocusout="localStorage.setItem('clave_api', this.value);reiniciar_api_ok();" onkeyup="localStorage.setItem('clave_api', this.value);reiniciar_api_ok();" placeholder="Clave API" style="text-align: center;width: 100%;margin-right: -2px;" title="Stop (BTC)" required="">
+          <input type="password" id="clave_secreta" onfocusout="localStorage.setItem('clave_secreta', this.value);reiniciar_api_ok();" onkeyup="localStorage.setItem('clave_secreta', this.value);reiniciar_api_ok();" placeholder="Clave SECRETA" style="text-align: center;width: 100%;margin-right: -2px;" title="Stop (BTC)" required="">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <button type="button" id="herramienta_1" style="width: 100%;display: none;" data-toggle="collapse" onclick="aoc();" class="btn btn-success">&#11015; Calculadora 🧮</button>
+      <button type="button" id="herramienta_2" style="width: 100%;display: none;" data-toggle="collapse" onclick="aoconsola();" class="btn btn-success">&#11015; Consola de depuración 📋</button>
+      <div id="calculadora" class="collapse" style="display: none;">
+        <p style="color: white;font-size: 22px;margin-top: 9px;text-align: center;">Calculadora (ganancia/pérdida entre la compra y la venta):</p>
+        <div style="margin-top: -8px;">
+          <input type="number" style="width: 100%;text-align: center;" id="a" onchange="calPor();" onkeyup="calPor();" placeholder="Precio de entrada">
+          <input type="number" style="width: 100%;text-align: center;" id="b" onchange="calPor();" onkeyup="calPor();" placeholder="Precio de salida">
+          <input type="text" style="width: 100%;text-align: center;" id="c" readonly="" placeholder="%">
+        </div>
+      </div>
+      <div id="consola_ver" class="collapse" style="display: none;">
+        <div id="debugDiv" style="color: white;"></div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div style="width: max-content;">
+    <table style="display: none;text-align: center;margin-top: 25px;" id="estadisticas" width="800">
+      <thead style="color: #ced4da;">
+        <tr>
+          <th>Símbolo:</th>
+          <th>Volumen:</th>
+          <th>Porcentaje 24h:</th>
+        </tr>
+      </thead>
+      <tbody id="estadisticas_24h" style="color: #818182;">
+      </tbody>
+    </table>
+  </div>
+  <br>
+  <h1 id="no_hay_api_personal" style="display: none;text-align: center;margin-top: 50px;color: crimson;">Debe introducir su API de Binance</h1>
+  <h2 id="no_hay_api_personal2" style="display: none;text-align: center;margin-top: 20px;color: cornflowerblue;">En Configuración->API Binance</h2>
+  <button id="reiniciar_api_ok" class="btc btn-success" onclick="location.reload();" style="display: none;text-align: center;margin: 0 auto;height: 200px;margin-top: 21px;font-size: xx-large;width: -webkit-fill-available;">Reiniciar [API introducida]</button>
+  <div class="card-body" id="poner_api" style="margin-top: -20px;display: ">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12">
+            <div style="text-align: center;">
+             <img src="cargando_saldo.gif" style="width: 134px;height: 91px;margin-top: -17px;" id="cargando_saldo" draggable="false">
+           </div>
+           <div id="si_total_total_cargo">
+             <div id="saldos_tolit" style="text-align: center;"></div>
+             <div id="saldo_total" style="text-align: center;"></div>
+           </div>
+         </div>
+         <!-- <div class="col-md-6"> -->
+          <!-- <div class="row">
+           <div class="col-md-6">
+            <div style="color: #91c6ff;text-align: center;">
+              <div style="margin-left: -188px;margin-bottom: -16px;" onclick="m2();"><img src='info.png' width='20px' draggable="false"></div>
+              <p>Asegurar operaciones:</p>
+              <select id="aseguope" style="margin-top: -14px;background-color: inherit;color: #ffc107;text-indent: 11px;text-align: center;text-align-last: center;width: 89px;">
+                <option value="Si">Sí</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+        </div> -->
+      <!-- </div> -->
+      <div id="icon_info" style="width: 100%;color: #91c6ff;text-align: center;">
+        <div style="margin-left: -181px;margin-bottom: -32px;margin-top: 19px;" onclick="m3();"><img src='info.png' width='20px' draggable="false"></div>
+        <h6 style="color: white;margin-top: 18px;">Criptomoneda (Par):</h6>
+        <select id="symbol" onkeyup="this.value = this.value.toUpperCase();" style="text-align: center;color: greenyellow;background-color: black;border-color: unset;" title="Par a operar (Ejemplo: BATBTC)" placeholder="Escribe/Selecciona el PAR a operar (796 pares)" required="">
+         <option value="" selected="">Selecciona el PAR a operar</option>
+       </select>
+       <div class="row">
+         <div class="col-md-5 col-sm-5" style="margin-top: 36px;">
+          <div id="cantidad_minima_para_operar" style="text-align: center;width: 100%;color: white;"></div>
+        </div>
+        <div class="col-md-2 col-sm-2" style="margin-top: 21px;">
+          <div style="color: #91c6ff;text-align: center;margin-bottom: 10px;font-size: x-large;" id="cripto_nombre"></div>
+          <div id="precio_cripto" style="color: #ffc107;margin-top: -11px;text-align: center;font-size: larger;"></div>
+        </div>
+        <div class="col-md-5 col-sm-5" style="margin-top: 36px;">
+         <div id="monedas_maximas_para_operar" style="text-align: center;width: 100%;color: white;"></div>
+       </div>
+     </div>
+     <div id="porcentajes_para_operar" style="text-align: center;width: 100%;color: white;"></div>
+     <div class="container">
+      <div>
+        <img src='info.png' width='20px' onclick="m6();" draggable="false" style="margin-top: 12px;margin-left: -309px;">
+        <p style="margin-top: -20px;">Tipos de órdenes disponibles (# Máx. 8):</p>
+      </div>
+      <div class="row">
+        <!-- orden 1 -->
+        <div class="col-md-3 col-sm-3" style="margin-top: 36px;display: none;" id="ver_1">
+         <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+          <select id="sa_1" style="background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+           <option value="ninguno" selected="">Ninguna orden</option>
+           <option value="comprar_limit_order">Comprar Limit Order</option>
+           <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+           <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+           <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+           <option value="comprar_oco">Comprar OCO</option>
+           <option value="vender_limit_order">Vender Limit Order</option>
+           <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+           <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+           <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+           <option value="vender_oco">Vender OCO</option>
+         </select>
+       </div>
+       <div id="sa_1_" style="text-align: center;display: none;">
+        <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+        <h6 style="color: white;">Orden #1</h6>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_1" value="" size="10" id="precio_orden_1" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_1" size="10" value="" id="stop_orden_1" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_1" size="10" value="" id="limite_orden_1" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+        <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+        <label style="color: white;">Cantidad de monedas:</label>
+        <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_1" value="" size="10" id="cantidad_orden_1" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+        <div id="orden_1" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+        <br>
+      </div>
+    </div>
+    <!-- orden 2 -->
+    <div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+     <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+      <select id="sa_2" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+       <option value="ninguno" selected="">Ninguna orden</option>
+       <option value="comprar_limit_order">Comprar Limit Order</option>
+       <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+       <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+       <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+       <option value="comprar_oco">Comprar OCO</option>
+       <option value="vender_limit_order">Vender Limit Order</option>
+       <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+       <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+       <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+       <option value="vender_oco">Vender OCO</option>
+     </select>
+   </div>
+   <div id="sa_2_" style="display: none;text-align: center;">
+    <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+    <h6 style="color: white;">Orden #2</h6>
+    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_2" value="" size="10" id="precio_orden_2" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_2" size="10" value="" id="stop_orden_2" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_2" size="10" value="" id="limite_orden_2" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+    <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+    <label style="color: white;">Cantidad de monedas:</label>
+    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_2" value="" size="10" id="cantidad_orden_2" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+    <div id="orden_2" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+    <br>
+  </div>
+</div>
+<!-- orden 3 -->
+<div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+ <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+  <select id="sa_3" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+   <option value="ninguno" selected="">Ninguna orden</option>
+   <option value="comprar_limit_order">Comprar Limit Order</option>
+   <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+   <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+   <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+   <option value="comprar_oco">Comprar OCO</option>
+   <option value="vender_limit_order">Vender Limit Order</option>
+   <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+   <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+   <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+   <option value="vender_oco">Vender OCO</option>
+ </select>
+</div>
+<div id="sa_3_" style="display: none;text-align: center;">
+  <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+  <h6 style="color: white;">Orden #3</h6>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_3" value="" size="10" id="precio_orden_3" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_3" size="10" value="" id="stop_orden_3" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_3" size="10" value="" id="limite_orden_3" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+  <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+  <label style="color: white;">Cantidad de monedas:</label>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_3" value="" size="10" id="cantidad_orden_3" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+  <div id="orden_3" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+  <br>
+</div>
+</div>
+<!-- orden 4 -->
+<div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+ <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+  <select id="sa_4" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+   <option value="ninguno" selected="">Ninguna orden</option>
+   <option value="comprar_limit_order">Comprar Limit Order</option>
+   <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+   <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+   <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+   <option value="comprar_oco">Comprar OCO</option>
+   <option value="vender_limit_order">Vender Limit Order</option>
+   <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+   <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+   <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+   <option value="vender_oco">Vender OCO</option>
+ </select>
+</div>
+<div id="sa_4_" style="display: none;text-align: center;">
+  <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+  <h6 style="color: white;">Orden #4</h6>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_4" value="" size="10" id="precio_orden_4" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_4" size="10" value="" id="stop_orden_4" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_4" size="10" value="" id="limite_orden_4" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+  <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+  <label style="color: white;">Cantidad de monedas:</label>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_4" value="" size="10" id="cantidad_orden_4" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+  <div id="orden_4" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+  <br>
+</div>
+</div>
+<!-- orden 5 -->
+<div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+ <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+  <select id="sa_5" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+   <option value="ninguno" selected="">Ninguna orden</option>
+   <option value="comprar_limit_order">Comprar Limit Order</option>
+   <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+   <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+   <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+   <option value="comprar_oco">Comprar OCO</option>
+   <option value="vender_limit_order">Vender Limit Order</option>
+   <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+   <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+   <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+   <option value="vender_oco">Vender OCO</option>
+ </select>
+</div>
+<div id="sa_5_" style="display: none;text-align: center;">
+  <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+  <h6 style="color: white;">Orden #5</h6>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_5" value="" size="10" id="precio_orden_5" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_5" size="10" value="" id="stop_orden_5" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_5" size="10" value="" id="limite_orden_5" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+  <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+  <label style="color: white;">Cantidad de monedas:</label>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_5" value="" size="10" id="cantidad_orden_5" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+  <div id="orden_5" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+  <br>
+</div>
+</div>
+<!-- orden 6 -->
+<div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+ <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+  <select id="sa_6" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+   <option value="ninguno" selected="">Ninguna orden</option>
+   <option value="comprar_limit_order">Comprar Limit Order</option>
+   <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+   <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+   <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+   <option value="comprar_oco">Comprar OCO</option>
+   <option value="vender_limit_order">Vender Limit Order</option>
+   <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+   <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+   <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+   <option value="vender_oco">Vender OCO</option>
+ </select>
+</div>
+<div id="sa_6_" style="display: none;text-align: center;">
+  <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+  <h6 style="color: white;">Orden #6</h6>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_6" value="" size="10" id="precio_orden_6" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_6" size="10" value="" id="stop_orden_6" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_6" size="10" value="" id="limite_orden_6" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+  <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+  <label style="color: white;">Cantidad de monedas:</label>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_6" value="" size="10" id="cantidad_orden_6" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+  <div id="orden_6" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+  <br>
+</div>
+</div>
+<!-- orden 7 -->
+<div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+ <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+  <select id="sa_7" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+   <option value="ninguno" selected="">Ninguna orden</option>
+   <option value="comprar_limit_order">Comprar Limit Order</option>
+   <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+   <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+   <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+   <option value="comprar_oco">Comprar OCO</option>
+   <option value="vender_limit_order">Vender Limit Order</option>
+   <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+   <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+   <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+   <option value="vender_oco">Vender OCO</option>
+ </select>
+</div>
+<div id="sa_7_" style="display: none;text-align: center;">
+  <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+  <h6 style="color: white;">Orden #7</h6>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_7" value="" size="10" id="precio_orden_7" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_7" size="10" value="" id="stop_orden_7" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_7" size="10" value="" id="limite_orden_7" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+  <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+  <label style="color: white;">Cantidad de monedas:</label>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_7" value="" size="10" id="cantidad_orden_7" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+  <div id="orden_7" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+  <br>
+</div>
+</div>
+<!-- orden 8 -->
+<div class="col-md-3 col-sm-3" style="margin-top: 36px;">
+ <div style="text-align: center;margin-top: -13px;text-align-last: center;">
+  <select id="sa_8" style="display: none;background-color: inherit;color: #ffc107;text-indent: 3px;width: 100%;margin-bottom: 12px;">
+   <option value="ninguno" selected="">Ninguna orden</option>
+   <option value="comprar_limit_order">Comprar Limit Order</option>
+   <option value="comprar_orden_de_mercado">Comprar Orden de mercado</option>
+   <option value="comprar_stop_limit">Comprar Stop-Loss-Limit</option>
+   <option value="comprar_stop_limit2">Comprar Take-Profit-Limit</option>
+   <option value="comprar_oco">Comprar OCO</option>
+   <option value="vender_limit_order">Vender Limit Order</option>
+   <option value="vender_orden_de_mercado">Vender Orden de mercado</option>
+   <option value="vender_stop_limit">Vender Stop-Loss-Limit</option>
+   <option value="vender_stop_limit2">Vender Take-Profit-Limit</option>
+   <option value="vender_oco">Vender OCO</option>
+ </select>
+</div>
+<div id="sa_8_" style="display: none;text-align: center;">
+  <img src='info.png' width='20px' onclick="m4();" style="margin-bottom: -16px;margin-left: -97px;" draggable="false">
+  <h6 style="color: white;">Orden #8</h6>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="precio_orden_8" value="" size="10" id="precio_orden_8" placeholder="Precio (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Precio (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="stop_orden_8" size="10" value="" id="stop_orden_8" placeholder="Stop (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Stop (BTC)" required="">
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="limite_orden_8" size="10" value="" id="limite_orden_8" placeholder="Límite (BTC)" style="text-align: center;width: 100%;margin-bottom: 14px;" title="Límite (BTC)" required="">
+  <img src='info.png' width='20px' onclick="m5();" style="margin-bottom: 9;margin-left: -18px;" draggable="false">
+  <label style="color: white;">Cantidad de monedas:</label>
+  <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" name="cantidad_orden_8" value="" size="10" id="cantidad_orden_8" placeholder="Cantidad (# monedas)" style="text-align: center;width: 100%;margin-bottom: 2px;" title="Cantidad (# monedas)" required="">
+  <div id="orden_8" style="color: #21ff54;margin-top: 5px;text-align: center;font-size: 22px;"></div>
+  <br>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<br><br>
+<center>
+  <button class="btn waves-effect waves-light ejecutar_bot" style="background: #24c593;margin-bottom: 35px;margin-top: -17px;margin-bottom: 10px;" onclick="orden1();" id="ejecutar_bot" type="button" name="action">Ejecutar BOT</button>
+  <!-- <button class="btn waves-effect waves-light reiniciar_bot" style="background: #24c593;margin-bottom: 35px;margin-top: -17px;margin-bottom: 10px;display: none;" onclick="location.reload();" id="reiniciar_bot" type="button" name="action" disabled="">Reiniciar BOT</button> -->
+</center>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body> 
+<script>
+//selector de ordenes (hide and show)
+$('#sa_1').change(function() {
+  if (document.getElementById("sa_1").value == "ninguno") {
+    document.getElementById("sa_1_").style.display = "none";
+    document.getElementById("sa_2").style.display = "none";
+    document.getElementById("sa_2_").style.display = "none";
+    document.getElementById("sa_3").style.display = "none";
+    document.getElementById("sa_3_").style.display = "none";
+    document.getElementById("sa_4").style.display = "none";
+    document.getElementById("sa_4_").style.display = "none";
+    document.getElementById("sa_5").style.display = "none";
+    document.getElementById("sa_5_").style.display = "none";
+    document.getElementById("sa_6").style.display = "none";
+    document.getElementById("sa_6_").style.display = "none";
+    document.getElementById("sa_7").style.display = "none";
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "comprar_limit_order") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "none";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "none";
+    document.getElementById("stop_orden_1").style.display = "none";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "comprar_stop_limit") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "comprar_stop_limit2") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "comprar_oco") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "";
+  } else if (document.getElementById("sa_1").value == "comprar_oco") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "";
+  } else if (document.getElementById("sa_1").value == "vender_limit_order") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "none";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "none";
+    document.getElementById("stop_orden_1").style.display = "none";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "vender_stop_limit") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "vender_stop_limit2") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "none";
+  } else if (document.getElementById("sa_1").value == "vender_oco") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "";
+  } else if (document.getElementById("sa_1").value == "vender_oco") {
+    document.getElementById("sa_1_").style.display = "";
+    document.getElementById("sa_2").style.display = "";
+    document.getElementById("precio_orden_1").style.display = "";
+    document.getElementById("stop_orden_1").style.display = "";
+    document.getElementById("limite_orden_1").style.display = "";
+  }
+})
+$('#sa_2').change(function() {
+  if (document.getElementById("sa_2").value == "ninguno") {
+    document.getElementById("sa_2_").style.display = "none";
+    document.getElementById("sa_3").style.display = "none";
+    document.getElementById("sa_3_").style.display = "none";
+    document.getElementById("sa_4").style.display = "none";
+    document.getElementById("sa_4_").style.display = "none";
+    document.getElementById("sa_5").style.display = "none";
+    document.getElementById("sa_5_").style.display = "none";
+    document.getElementById("sa_6").style.display = "none";
+    document.getElementById("sa_6_").style.display = "none";
+    document.getElementById("sa_7").style.display = "none";
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "comprar_limit_order") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "none";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "none";
+    document.getElementById("stop_orden_2").style.display = "none";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "comprar_stop_limit") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "comprar_stop_limit2") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "comprar_oco") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "";
+  } else if (document.getElementById("sa_2").value == "comprar_oco") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "";
+  } else if (document.getElementById("sa_2").value == "vender_limit_order") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "none";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "none";
+    document.getElementById("stop_orden_2").style.display = "none";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "vender_stop_limit") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "vender_stop_limit2") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "none";
+  } else if (document.getElementById("sa_2").value == "vender_oco") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "";
+  } else if (document.getElementById("sa_2").value == "vender_oco") {
+    document.getElementById("sa_2_").style.display = "";
+    document.getElementById("sa_3").style.display = "";
+    document.getElementById("precio_orden_2").style.display = "";
+    document.getElementById("stop_orden_2").style.display = "";
+    document.getElementById("limite_orden_2").style.display = "";
+  } else {}
+})
+$('#sa_3').change(function() {
+  if (document.getElementById("sa_3").value == "ninguno") {
+    document.getElementById("sa_3_").style.display = "none";
+    document.getElementById("sa_4").style.display = "none";
+    document.getElementById("sa_4_").style.display = "none";
+    document.getElementById("sa_5").style.display = "none";
+    document.getElementById("sa_5_").style.display = "none";
+    document.getElementById("sa_6").style.display = "none";
+    document.getElementById("sa_6_").style.display = "none";
+    document.getElementById("sa_7").style.display = "none";
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "comprar_limit_order") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "none";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "none";
+    document.getElementById("stop_orden_3").style.display = "none";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "comprar_stop_limit") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "comprar_stop_limit2") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "comprar_oco") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "";
+  } else if (document.getElementById("sa_3").value == "comprar_oco") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "";
+  } else if (document.getElementById("sa_3").value == "vender_limit_order") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "none";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "none";
+    document.getElementById("stop_orden_3").style.display = "none";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "vender_stop_limit") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "vender_stop_limit2") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "none";
+  } else if (document.getElementById("sa_3").value == "vender_oco") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "";
+  } else if (document.getElementById("sa_3").value == "vender_oco") {
+    document.getElementById("sa_3_").style.display = "";
+    document.getElementById("sa_4").style.display = "";
+    document.getElementById("precio_orden_3").style.display = "";
+    document.getElementById("stop_orden_3").style.display = "";
+    document.getElementById("limite_orden_3").style.display = "";
+  } else {}
+})
+$('#sa_4').change(function() {
+  if (document.getElementById("sa_4").value == "ninguno") {
+    document.getElementById("sa_4_").style.display = "none";
+    document.getElementById("sa_5").style.display = "none";
+    document.getElementById("sa_5_").style.display = "none";
+    document.getElementById("sa_6").style.display = "none";
+    document.getElementById("sa_6_").style.display = "none";
+    document.getElementById("sa_7").style.display = "none";
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "comprar_limit_order") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "none";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "none";
+    document.getElementById("stop_orden_4").style.display = "none";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "comprar_stop_limit") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "comprar_stop_limit2") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "comprar_oco") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "";
+  } else if (document.getElementById("sa_4").value == "comprar_oco") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "";
+  } else if (document.getElementById("sa_4").value == "vender_limit_order") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "none";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "none";
+    document.getElementById("stop_orden_4").style.display = "none";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "vender_stop_limit") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "vender_stop_limit2") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "none";
+  } else if (document.getElementById("sa_4").value == "vender_oco") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "";
+  } else if (document.getElementById("sa_4").value == "vender_oco") {
+    document.getElementById("sa_4_").style.display = "";
+    document.getElementById("sa_5").style.display = "";
+    document.getElementById("precio_orden_4").style.display = "";
+    document.getElementById("stop_orden_4").style.display = "";
+    document.getElementById("limite_orden_4").style.display = "";
+  } else {}
+})
+$('#sa_5').change(function() {
+  if (document.getElementById("sa_5").value == "ninguno") {
+    document.getElementById("sa_5_").style.display = "none";
+    document.getElementById("sa_6").style.display = "none";
+    document.getElementById("sa_6_").style.display = "none";
+    document.getElementById("sa_7").style.display = "none";
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "comprar_limit_order") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "none";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "none";
+    document.getElementById("stop_orden_5").style.display = "none";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "comprar_stop_limit") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "comprar_stop_limit2") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "comprar_oco") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "";
+  } else if (document.getElementById("sa_5").value == "comprar_oco") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "";
+  } else if (document.getElementById("sa_5").value == "vender_limit_order") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "none";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "none";
+    document.getElementById("stop_orden_5").style.display = "none";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "vender_stop_limit") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "vender_stop_limit2") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "none";
+  } else if (document.getElementById("sa_5").value == "vender_oco") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "";
+  } else if (document.getElementById("sa_5").value == "vender_oco") {
+    document.getElementById("sa_5_").style.display = "";
+    document.getElementById("sa_6").style.display = "";
+    document.getElementById("precio_orden_5").style.display = "";
+    document.getElementById("stop_orden_5").style.display = "";
+    document.getElementById("limite_orden_5").style.display = "";
+  } else {}
+})
+$('#sa_6').change(function() {
+  if (document.getElementById("sa_6").value == "ninguno") {
+    document.getElementById("sa_6_").style.display = "none";
+    document.getElementById("sa_7").style.display = "none";
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "comprar_limit_order") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "none";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "none";
+    document.getElementById("stop_orden_6").style.display = "none";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "comprar_stop_limit") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "comprar_stop_limit2") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "comprar_oco") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "";
+  } else if (document.getElementById("sa_6").value == "comprar_oco") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "";
+  } else if (document.getElementById("sa_6").value == "vender_limit_order") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "none";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "none";
+    document.getElementById("stop_orden_6").style.display = "none";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "vender_stop_limit") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "vender_stop_limit2") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "none";
+  } else if (document.getElementById("sa_6").value == "vender_oco") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "";
+  } else if (document.getElementById("sa_6").value == "vender_oco") {
+    document.getElementById("sa_6_").style.display = "";
+    document.getElementById("sa_7").style.display = "";
+    document.getElementById("precio_orden_6").style.display = "";
+    document.getElementById("stop_orden_6").style.display = "";
+    document.getElementById("limite_orden_6").style.display = "";
+  } else {}
+})
+$('#sa_7').change(function() {
+  if (document.getElementById("sa_7").value == "ninguno") {
+    document.getElementById("sa_7_").style.display = "none";
+    document.getElementById("sa_8").style.display = "none";
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "comprar_limit_order") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "none";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "none";
+    document.getElementById("stop_orden_7").style.display = "none";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "comprar_stop_limit") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "comprar_stop_limit2") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "comprar_oco") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "";
+  } else if (document.getElementById("sa_7").value == "comprar_oco") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "";
+  } else if (document.getElementById("sa_7").value == "vender_limit_order") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "none";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "none";
+    document.getElementById("stop_orden_7").style.display = "none";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "vender_stop_limit") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "vender_stop_limit2") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "none";
+  } else if (document.getElementById("sa_7").value == "vender_oco") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "";
+  } else if (document.getElementById("sa_7").value == "vender_oco") {
+    document.getElementById("sa_7_").style.display = "";
+    document.getElementById("sa_8").style.display = "";
+    document.getElementById("precio_orden_7").style.display = "";
+    document.getElementById("stop_orden_7").style.display = "";
+    document.getElementById("limite_orden_7").style.display = "";
+  } else {}
+})
+$('#sa_8').change(function() {
+  if (document.getElementById("sa_8").value == "ninguno") {
+    document.getElementById("sa_8_").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "comprar_limit_order") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "none";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "comprar_orden_de_mercado") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "none";
+    document.getElementById("stop_orden_8").style.display = "none";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "comprar_stop_limit") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "comprar_stop_limit2") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "comprar_oco") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "";
+  } else if (document.getElementById("sa_8").value == "comprar_oco") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "";
+  } else if (document.getElementById("sa_8").value == "vender_limit_order") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "none";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "vender_orden_de_mercado") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "none";
+    document.getElementById("stop_orden_8").style.display = "none";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "vender_stop_limit") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "vender_stop_limit2") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "none";
+  } else if (document.getElementById("sa_8").value == "vender_oco") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "";
+  } else if (document.getElementById("sa_8").value == "vender_oco") {
+    document.getElementById("sa_8_").style.display = "";
+    document.getElementById("precio_orden_8").style.display = "";
+    document.getElementById("stop_orden_8").style.display = "";
+    document.getElementById("limite_orden_8").style.display = "";
+  } else {}
+})
+
+//cargar según inicia
+if (localStorage.getItem("clave_api") === null && localStorage.getItem("clave_secreta") === null) {
+  localStorage.setItem("consola", "Si");
+  localStorage.setItem("log_txt", "Si");
+  localStorage.setItem("Alarmas", "Si");
+  localStorage.setItem("activar_emails", "Si");
+} else {
+  obtenerSaldoBTC();
+  cargarcambios();
+  loadSymbols();
+}
+
+//variables
+var par;
+var logs;
+var precio_actual;
+var version = "1.5" ;
+
+//activar console.logs (0=desactivados & 1=activados)
+function alec() {
+  var activarConsoleLog = document.getElementById("alec").value;
+  if (activarConsoleLog == "No") {
+    logs = 0;
+    localStorage.setItem("consola", activarConsoleLog);
+  } else {
+    logs = 1;
+    localStorage.setItem("consola", activarConsoleLog);
+  }
+}
+
+//mostrar u ocultar config
+function a1(){
+  if (document.getElementById('config').style.display != 'block') {
+    document.getElementById('config').style.display = 'block';
+  } else {
+    document.getElementById('config').style.display = 'none';
+  }
+}
+
+//mostrar u ocultar herramientas
+function a2(){
+  if (document.getElementById('herramienta_1').style.display != 'block' && document.getElementById('herramienta_2').style.display != 'block') {
+    document.getElementById('herramienta_1').style.display = 'block';
+    document.getElementById('herramienta_2').style.display = 'block';
+    document.getElementById('calculadora').style.display = 'none';
+    document.getElementById('consola_ver').style.display = 'none';
+  } else {
+    document.getElementById('herramienta_1').style.display = 'none';
+    document.getElementById('herramienta_2').style.display = 'none';
+    document.getElementById('calculadora').style.display = 'none';
+    document.getElementById('consola_ver').style.display = 'none';
+  }
+}
+
+//mostrar u ocultar calculadora
+function aoc(){
+  if (document.getElementById('calculadora').style.display != 'block') {
+    document.getElementById('calculadora').style.display = 'block';
+    document.getElementById('consola_ver').style.display = 'none';
+  } else {
+    document.getElementById('calculadora').style.display = 'none';
+  }
+}
+
+//mostrar u ocultar consola
+function aoconsola(){
+  if (document.getElementById('consola_ver').style.display != 'block') {
+    document.getElementById('consola_ver').style.display = 'block';
+    document.getElementById('calculadora').style.display = '';
+  } else {
+    document.getElementById('consola_ver').style.display = 'none';
+  }
+}
+
+//mutar audio (alertas)
+function sonarAlarmas() {
+  var sonaralarmas = document.getElementById("sonaralarmas").value;
+  if (sonaralarmas == "Si") {
+    alarma_1.play();
+    localStorage.setItem("Alarmas", "Si");
+  } else {
+    localStorage.setItem("Alarmas", "No");
+  }
+}
+
+//selector log_txt (activar log en un txt (lo escribe en la raíz del software)
+function log_txt() {
+  var log_txt = document.getElementById("log_txt").value;
+  if (log_txt == "Si") {
+    localStorage.setItem("log_txt", "Si");
+  } else {
+    localStorage.setItem("log_txt", "No");
+  }
+}
+
+//selector email (envío de emails cuando se realiza un movimiento (operación))
+function activarEmails() {
+  var activar_emails = document.getElementById("activar_emails").value;
+  if (activar_emails == "Si") {
+    localStorage.setItem("activar_emails", "Si");
+  } else {
+    localStorage.setItem("activar_emails", "No");
+  }
+}
+
+if ($( "#symbol option:selected" ).val() == "") {
+  if (logs == 1) {
+    console.log("Par no seleccionado... así no puede traer ningún precio :) | Fecha y hora: "+Date().toLocaleString());
+  } else {}
+} else {}
+
+//si cambia el selector de la cripto, se guarda en una variable (el par)
+$('#symbol').change(function() {
+  if (document.getElementById("symbol").value == "") {
+  } else {
+    document.getElementById("ocultar_wait").style.display = "";
+    document.getElementById("otasf").style.display = "none";
+    par = document.getElementById("symbol").value;
+    var cripto = document.getElementById("symbol").value;
+    localStorage.setItem("cripto", cripto);
+    if (document.getElementById("symbol").value != "") {
+      document.getElementById('sa_1').style.display = "";
+      document.getElementById('ver_1').style.display = "";
+      if (logs == 1) {
+        console.log("Par seleccionado: "+par);
+      } else {}
+      const request = require('request');
+      request('https://api.binance.com/api/v3/ticker/price', (error, response, body) => {
+        if (error) {
+          console.error(`No se pudo enviar la solicitud a la API: ${error.message}`);
+          return;
+        }
+        if (response.statusCode != 200) {
+          console.error(`Código de estado esperado 200 pero recibido ${response.statusCode}.`);
+          return;
+        }
+        movies = JSON.parse(body);
+        movies.forEach(pcda => {
+          if (pcda['symbol'] == par) {
+            console.log(`${pcda['symbol']}, ${pcda['price']}`);
+          }
+        });
+      });
+    } else {
+      if (logs == 1) {
+        console.log("Ningún par seleccionado");
+      } else {}
+    }
+    cmpt();
+    if (document.getElementById("symbol").value == "") {
+      if (logs == 1) {
+        console.log("Ningún par seleccionado (input vacío)");
+      } else {}
+    } else {
+    }
+  }
+})
+
+//carga todas las criptos en el selector
+function loadSymbols(){
+  url('GET','https://api.binance.com/api/v3/ticker/price').
+  then((r1) => {
+    var lv_r1Resp = JSON.parse(r1.target.responseText);
+    var optionsAsString = '';
+    for(i=0;i<lv_r1Resp.length;i++){
+      optionsAsString += "<option style='text-align: center;' value='" + lv_r1Resp[i]["symbol"] + "' >" + lv_r1Resp[i]["symbol"] + "</option>";
+    }
+    $('select[id="symbol"]' ).append( optionsAsString );
+    $('select[id=symbol]').selectize({
+      selectizeortField: 'text'
+    });
+  }).
+  catch((err) => {
+    console.error(err);
+  });
+}
+function url(method, url) {
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url);
+    xhr.onload = resolve;
+    xhr.onerror = reject;
+    xhr.send();
+  });
+}
+
+//loader inicial
+$(document).ready(function() {
+  setTimeout(function() {
+    $("#ocultar").fadeIn(1500);
+    document.getElementById("ocultar_loader").style.display = "none";
+    document.getElementById("ocultar_wait").style.display = "none";
+//efecto texto inicial (cabecera)
+consoleText(['Binance TradingBot '+version], 'text',['white']);
+function consoleText(words, id, colors) {
+  if (colors === undefined) colors = ['#fff'];
+  var visible = true;
+  var con = document.getElementById('console');
+  var letterCount = 1;
+  var x = 1;
+  var waiting = false;
+  var target = document.getElementById(id)
+  target.setAttribute('style', 'color:' + colors[0])
+  window.setInterval(function() {
+    if (letterCount === 0 && waiting === false) {
+      waiting = true;
+      target.innerHTML = words[0].substring(0, letterCount)
+    } else if (waiting === false) {
+      target.innerHTML = words[0].substring(0, letterCount)
+      letterCount += x;
+    }
+  }, 120)
+  document.getElementById('console').style.display = "none";
+}
+},3000);
+//comprueba si existe una nueva versión
+$.get('https://berkinalex.com/binance-trading-bot-update.php', {
+}, function(data) {
+  if (version < data) {
+    var url = "https://berkinalex.com/bot-trading-binance-criptomonedas";
+//notificar nueva versión disponible
+var $dialog = $('<div></div>')
+.html("<center>Existe una nueva versión del software (Binance Tradingbot "+version+"), consulte en la web <p onclick='url_version();'>https://berkinalex.com para obtener la actualización e informarse de las novedades.<br><br>(<b>Nueva versión:</b> "+data+")</p></center>")
+.dialog({
+  resizable: false,
+  title: "ACTUALIZACIÓN DEL SOFTWARE",
+  modal: true,
+  height: "auto",
+  top: "50%",
+  width: "50%",
+  draggable: true,
+  buttons: {
+    Leído: function() {
+      $(this).dialog("close");
+    }
+  }
+});
+if (logs == 1) {
+  console.log("Nueva versión del software disponible: "+data);
+} else {}
+} else if (version == data) {
+  if (logs == 1) {
+    console.log("Software actualizado a la última versión: "+data);
+  } else {}
+} else {
+  if (logs == 1) {
+    console.log("Está usando una versión no oficial, ¡¡ consulte al desarrollador !!: "+data);
+  } else {}
+}
+});
+});
+
+function url_version(){
+  window.open("https://berkinalex.com");
+}
+
+//si la API es la demo, notificar
+if (key == "vmPUZE6mv9SD5VNHk4HlWFsOr6aKE2zvsw0MuIgwCIPy6utIco14y7Ju91duEh8A" && secret == "NhqPtmdSJYdKjVHjA7PZj4Mge3R5YNiP1e3UZjInClVN65XAbvqqM6A7H5fATj0j") {
+  document.getElementById("poner_api").style.display = "none";
+  document.getElementById("no_hay_api_personal").style.display = "";
+  document.getElementById("no_hay_api_personal2").style.display = "";
+} else {
+}
+
+//si se puso la api, pedir reiniciar
+function reiniciar_api_ok(){
+  if (localStorage.getItem("clave_api") != "" && localStorage.getItem("clave_secreta") != "") {
+    document.getElementById("reiniciar_api_ok").style.display = "";
+  }
+}
+
+//cambiar comas por puntos en los inputs
+$('#cantidad_orden_1').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_2').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_3').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_4').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_5').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_6').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_7').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#cantidad_orden_8').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+});
+$('#precio_orden_1').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var precio_orden_1 = parseInt(document.getElementById("precio_orden_1").value);
+});
+$('#stop_orden_1').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_1 = parseInt(document.getElementById("stop_orden_1").value);
+});
+$('#limite_orden_1').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_1 = document.getElementById("limite_orden_1").value;
+});
+$('#cantidad_orden_2').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_2 = parseInt(document.getElementById("cantidad_orden_2").value);
+});
+$('#stop_orden_2').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_2 = parseInt(document.getElementById("stop_orden_2").value);
+});
+$('#limite_orden_2').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_2 = document.getElementById("limite_orden_2").value;
+});
+$('#cantidad_orden_3').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_3 = parseInt(document.getElementById("cantidad_orden_3").value);
+});
+$('#stop_orden_3').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_3 = parseInt(document.getElementById("stop_orden_3").value);
+});
+$('#limite_orden_3').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_3 = document.getElementById("limite_orden_3").value;
+});
+$('#cantidad_orden_4').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_4 = parseInt(document.getElementById("cantidad_orden_4").value);
+});
+$('#stop_orden_4').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_4 = parseInt(document.getElementById("stop_orden_4").value);
+});
+$('#limite_orden_4').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_4 = document.getElementById("limite_orden_4").value;
+});
+$('#cantidad_orden_5').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_5 = parseInt(document.getElementById("cantidad_orden_5").value);
+});
+$('#stop_orden_5').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_5 = parseInt(document.getElementById("stop_orden_5").value);
+});
+$('#limite_orden_5').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_5 = document.getElementById("limite_orden_5").value;
+});
+$('#cantidad_orden_6').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_6 = parseInt(document.getElementById("cantidad_orden_6").value);
+});
+$('#stop_orden_6').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_6 = parseInt(document.getElementById("stop_orden_6").value);
+});
+$('#limite_orden_6').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_6 = document.getElementById("limite_orden_6").value;
+});
+$('#cantidad_orden_7').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_7 = parseInt(document.getElementById("cantidad_orden_7").value);
+});
+$('#stop_orden_7').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_7 = parseInt(document.getElementById("stop_orden_7").value);
+});
+$('#limite_orden_7').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_7 = document.getElementById("limite_orden_7").value;
+});
+$('#cantidad_orden_8').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var cantidad_orden_8 = parseInt(document.getElementById("cantidad_orden_8").value);
+});
+$('#stop_orden_8').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var stop_orden_8 = parseInt(document.getElementById("stop_orden_8").value);
+});
+$('#limite_orden_8').keyup(function() {
+  $(this).val($(this).val().replace(',', '.'));
+  var limite_orden_8 = document.getElementById("limite_orden_8").value;
+});
+
+//mostrar console.log en herramientas
+if (typeof console  != "undefined") 
+  if (typeof console.log != 'undefined')
+    console.olog = console.log;
+  else
+    console.olog = function() {};
+  console.log = function(message) {
+    console.olog(message);
+    $('#debugDiv').append('<p>' + message + '</p>');
+  };
+  console.error = console.debug = console.info =  console.log
+
+//calculadora porcentajes (diferencia entre la compra y la venta)
+function calPor(){
+  var a = document.getElementById("a").value;
+  var b = document.getElementById("b").value;
+  var c = document.getElementById("c").value;
+  var a1 = b-a;
+  var a2 = a1/a;
+  var a3 = a2*100;
+  document.getElementById("c").value = a3.toFixed(2)+"%"
+}
+</script>
+</html>
