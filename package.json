@@ -31,11 +31,11 @@
     "electron-packager": "^15.0.0",
     "googleapis": "^52.1.0",
     "is-online": "^8.4.0",
-    "node-binance-api": "^0.11.8",
+    "node-binance-api": "^0.11.10",
     "nodemailer": "^6.4.10",
     "nodemailer-smtp-transport": "^2.7.4",
     "play-sound": "^1.1.3",
-    "re2": "^1.15.1",
+    "re2": "^1.15.2",
     "v8-compile-cache": "^2.1.1"
   },
   "dmg": {
