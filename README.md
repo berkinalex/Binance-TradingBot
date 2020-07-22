@@ -1,4 +1,4 @@
-🔥📈 # Binance TradingBot 1.4 📈🔥
+🔥📈 # Binance TradingBot 1.5.1 📈🔥
 ------------------------
 <img src="https://i0.wp.com/berkinalex.com/wp-content/uploads/2020/03/binance-bot-trading-long-software.png?resize=1140%2C641&amp;ssl=1" alt="Bot Trading Binance Criptomonedas">
 
