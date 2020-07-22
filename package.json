@@ -1,6 +1,6 @@
 {
   "name": "Binance_TradingBot",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Bot de criptomonedas",
   "main": "main.js",
   "scripts": {
