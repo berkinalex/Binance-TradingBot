@@ -1,6 +1,6 @@
 {
   "name": "Binance_TradingBot",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Bot de criptomonedas",
   "main": "main.js",
   "scripts": {
@@ -28,15 +28,14 @@
     "binance": "^1.3.5",
     "cryptr": "^6.0.2",
     "electron-debug": "^3.1.0",
-    "electron-packager": "^15.0.0",
-    "googleapis": "^55.0.0",
+    "googleapis": "^61.0.0",
     "is-online": "^8.4.0",
-    "lodash": "^4.17.19",
-    "node-binance-api": "^0.11.11",
-    "nodemailer": "^6.4.10",
+    "lodash": "^4.17.20",
+    "node-binance-api": "^0.12.1",
+    "nodemailer": "^6.4.13",
     "nodemailer-smtp-transport": "^2.7.4",
     "play-sound": "^1.1.3",
-    "re2": "^1.15.4",
+    "re2": "^1.15.5",
     "v8-compile-cache": "^2.1.1"
   },
   "dmg": {
@@ -59,6 +58,7 @@
   },
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^9.1.1"
+    "electron": "^10.1.3",
+    "electron-packager": "^15.1.0"
   }
 }
